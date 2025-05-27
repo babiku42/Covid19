@@ -54,4 +54,9 @@ try:
 except Exception as e:
     st.error(f"Failed to load or process online data: {e}")
 st.markdown("---")
-st.markdown("👨‍💻 Built by [**Bikubro**](https://www.linkedin.com/in/badhikari6)")
+st.markdown(
+    "<div style='text-align: center;'>"
+    "👨‍💻 Built by <a href='https://www.linkedin.com/in/badhikari6' target='_blank'><strong>Bikubro</strong></a>"
+    "</div>",
+    unsafe_allow_html=True
+)

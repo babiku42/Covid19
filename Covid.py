@@ -1,112 +1,125 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": 1,
-   "id": "4d3cc786-3722-4f65-8b5c-1073cf1fbac6",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "2025-05-27 12:42:20.395 \n",
-      "  \u001b[33m\u001b[1mWarning:\u001b[0m to view this Streamlit app on a browser, run it with the following\n",
-      "  command:\n",
-      "\n",
-      "    streamlit run /opt/anaconda3/lib/python3.12/site-packages/ipykernel_launcher.py [ARGUMENTS]\n",
-      "2025-05-27 12:42:20.396 No runtime found, using MemoryCacheStorageManager\n",
-      "2025-05-27 12:42:20.398 No runtime found, using MemoryCacheStorageManager\n",
-      "/var/folders/xf/6fkxrf7n7ss4vyxkp13k6j500000gn/T/ipykernel_13826/2653876711.py:19: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
-      "  df.index = pd.to_datetime(df.index)\n"
-     ]
-    },
-    {
-     "data": {
-      "text/plain": [
-       "DeltaGenerator()"
-      ]
-     },
-     "execution_count": 1,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "# covid_dashboard.py\n",
-    "import streamlit as st\n",
-    "import pandas as pd\n",
-    "import matplotlib.pyplot as plt\n",
-    "\n",
-    "st.title(\"🌍 COVID-19 Country-wise Dashboard\")\n",
-    "st.write(\"Data Source: Johns Hopkins University CSSE\")\n",
-    "\n",
-    "# Load data\n",
-    "@st.cache_data\n",
-    "def load_data():\n",
-    "    url = (\"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/\"\n",
-    "           \"master/csse_covid_19_data/csse_covid_19_time_series/\"\n",
-    "           \"time_series_covid19_confirmed_global.csv\")\n",
-    "    df = pd.read_csv(url)\n",
-    "    df = df.drop(columns=[\"Province/State\", \"Lat\", \"Long\"])\n",
-    "    df = df.groupby(\"Country/Region\").sum()\n",
-    "    df = df.transpose()\n",
-    "    df.index = pd.to_datetime(df.index)\n",
-    "    return df\n",
-    "\n",
-    "df = load_data()\n",
-    "\n",
-    "# Country selector\n",
-    "countries = df.columns.tolist()\n",
-    "selected_countries = st.multiselect(\"Select countries\", countries, default=[\"US\", \"India\", \"Brazil\"])\n",
-    "\n",
-    "# Plot\n",
-    "st.subheader(\"Confirmed COVID-19 Cases Over Time\")\n",
-    "fig, ax = plt.subplots(figsize=(12, 6))\n",
-    "for country in selected_countries:\n",
-    "    ax.plot(df.index, df[country], label=country)\n",
-    "ax.set_xlabel(\"Date\")\n",
-    "ax.set_ylabel(\"Confirmed Cases\")\n",
-    "ax.legend()\n",
-    "st.pyplot(fig)\n"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "ba4cef3b-3865-423b-9708-7f6f7365641c",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "24431bf1-9070-4ebc-abf8-bf762ad20b3a",
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python [conda env:base] *",
-   "language": "python",
-   "name": "conda-base-py"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.12.7"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[28]:
+
+
+import pandas as pd 
+
+
+# In[29]:
+
+
+import matplotlib.pyplot as plt 
+
+
+# In[30]:
+
+
+url = "time_series_19-covid-Confirmed_archived_0325.csv"
+
+
+# In[31]:
+
+
+df= pd.read_csv(url)
+
+
+# In[32]:
+
+
+df.head(2)
+
+
+# In[33]:
+
+
+print (f"Shape: {df.shape}")
+
+
+# In[34]:
+
+
+cases_worldwide = df.iloc[:, 4:].sum(axis=0)
+cases_worldwide.index = pd.to_datetime(cases_worldwide.index)
+
+
+# In[35]:
+
+
+print (cases_worldwide)
+
+
+# In[36]:
+
+
+plt.figure(figsize=(10,5))
+plt.plot(cases_worldwide.index, cases_worldwide.values)
+plt.title("Worldwide Confirmed COVID-19 Cases Over Time")
+plt.xlabel("Date")
+plt.ylabel("Number of Cases")
+plt.show()
+
+
+# In[37]:
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the data
+url_new = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+dff = pd.read_csv(url)
+
+# Group by Country and sum across provinces/states
+df_country = dff.drop(columns=["Province/State", "Lat", "Long"])
+df_country = df_country.groupby("Country/Region").sum()
+
+# Transpose so dates become rows (index) and countries become columns
+df_country = df_country.transpose()
+
+# Convert index to datetime
+df_country.index = pd.to_datetime(df_country.index)
+
+# View the first few rows
+print(df_country.head())
+
+
+# In[38]:
+
+
+# Get the top 5 countries by the most recent date
+latest_totals = df_country.iloc[-1]
+top_5_countries = latest_totals.sort_values(ascending=False).head(5).index
+
+# Plot
+plt.figure(figsize=(12, 6))
+for country in top_5_countries:
+    plt.plot(df_country.index, df_country[country], label=country)
+
+plt.title("Top 5 Countries - COVID-19 Confirmed Cases Over Time")
+plt.xlabel("Date")
+plt.ylabel("Confirmed Cases")
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+

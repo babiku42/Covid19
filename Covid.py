@@ -1,0 +1,112 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "4d3cc786-3722-4f65-8b5c-1073cf1fbac6",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "2025-05-27 12:42:20.395 \n",
+      "  \u001b[33m\u001b[1mWarning:\u001b[0m to view this Streamlit app on a browser, run it with the following\n",
+      "  command:\n",
+      "\n",
+      "    streamlit run /opt/anaconda3/lib/python3.12/site-packages/ipykernel_launcher.py [ARGUMENTS]\n",
+      "2025-05-27 12:42:20.396 No runtime found, using MemoryCacheStorageManager\n",
+      "2025-05-27 12:42:20.398 No runtime found, using MemoryCacheStorageManager\n",
+      "/var/folders/xf/6fkxrf7n7ss4vyxkp13k6j500000gn/T/ipykernel_13826/2653876711.py:19: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.\n",
+      "  df.index = pd.to_datetime(df.index)\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "DeltaGenerator()"
+      ]
+     },
+     "execution_count": 1,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# covid_dashboard.py\n",
+    "import streamlit as st\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "\n",
+    "st.title(\"🌍 COVID-19 Country-wise Dashboard\")\n",
+    "st.write(\"Data Source: Johns Hopkins University CSSE\")\n",
+    "\n",
+    "# Load data\n",
+    "@st.cache_data\n",
+    "def load_data():\n",
+    "    url = (\"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/\"\n",
+    "           \"master/csse_covid_19_data/csse_covid_19_time_series/\"\n",
+    "           \"time_series_covid19_confirmed_global.csv\")\n",
+    "    df = pd.read_csv(url)\n",
+    "    df = df.drop(columns=[\"Province/State\", \"Lat\", \"Long\"])\n",
+    "    df = df.groupby(\"Country/Region\").sum()\n",
+    "    df = df.transpose()\n",
+    "    df.index = pd.to_datetime(df.index)\n",
+    "    return df\n",
+    "\n",
+    "df = load_data()\n",
+    "\n",
+    "# Country selector\n",
+    "countries = df.columns.tolist()\n",
+    "selected_countries = st.multiselect(\"Select countries\", countries, default=[\"US\", \"India\", \"Brazil\"])\n",
+    "\n",
+    "# Plot\n",
+    "st.subheader(\"Confirmed COVID-19 Cases Over Time\")\n",
+    "fig, ax = plt.subplots(figsize=(12, 6))\n",
+    "for country in selected_countries:\n",
+    "    ax.plot(df.index, df[country], label=country)\n",
+    "ax.set_xlabel(\"Date\")\n",
+    "ax.set_ylabel(\"Confirmed Cases\")\n",
+    "ax.legend()\n",
+    "st.pyplot(fig)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ba4cef3b-3865-423b-9708-7f6f7365641c",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "24431bf1-9070-4ebc-abf8-bf762ad20b3a",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python [conda env:base] *",
+   "language": "python",
+   "name": "conda-base-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

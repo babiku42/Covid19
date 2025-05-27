@@ -53,3 +53,5 @@ try:
 
 except Exception as e:
     st.error(f"Failed to load or process online data: {e}")
+st.markdown("---")
+st.markdown("👨‍💻 Built by [**Bikubro**](https://www.linkedin.com/in/badhikari6)")

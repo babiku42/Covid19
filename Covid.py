@@ -56,7 +56,7 @@ except Exception as e:
 st.markdown("---")
 st.markdown(
     "<div style='text-align: center;'>"
-    "👨‍💻 Built by <a href='https://www.linkedin.com/in/badhikari6' target='_blank'><strong>Bikubro</strong></a>"
+    "👨‍💻 Built by <a href='https://www.linkedin.com/in/badhikari6' target='_blank'><strong>Bikash (Bikubro)</strong></a>"
     "</div>",
     unsafe_allow_html=True
 )
